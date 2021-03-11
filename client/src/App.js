@@ -1,12 +1,13 @@
-import { useState } from "react"
+import { useState }        from "react"
 import {
     Redirect,
     Route,
     Switch,
-}                   from "react-router-dom"
-import { history }  from "./config/network"
-import { ChatRoom } from "./screens/ChatRoom"
-import JoinRoom     from "./screens/JoinRoom"
+}                          from "react-router-dom"
+import { history }         from "./config/network"
+import ChatRoom            from "./screens/ChatRoom"
+import JoinRoom            from "./screens/JoinRoom"
+import { CenteredWrapper } from "./Styles"
 
 function App() {
     const [joinData, setJoinData] = useState({})
@@ -23,20 +24,22 @@ function App() {
 
     return (
         <div className="App">
-            <Switch>
-                <Redirect from="/" to="/join" exact/>
+            <CenteredWrapper>
+                <Switch>
+                    <Redirect from="/" to="/join" exact/>
 
-                <Route
-                    path="/join"
-                    component={() => <JoinRoom onJoinSuccess={onJoinSuccess}/>}/>
+                    <Route
+                        path="/join"
+                        component={() => <JoinRoom onJoinSuccess={onJoinSuccess}/>}/>
 
-                <Route
-                    path="/chat/rooms/:roomNumber"
-                    component={() => <ChatRoom
-                        username={username}
-                        room={room}
-                        joinData={joinData}/>}/>
-            </Switch>
+                    <Route
+                        path="/chat/rooms/:roomNumber"
+                        component={() => <ChatRoom
+                            username={username}
+                            room={room}
+                            joinData={joinData}/>}/>
+                </Switch>
+            </CenteredWrapper>
         </div>
     )
 }

@@ -10,7 +10,7 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/concepts/configurations.html#bootstrap
  */
 
-const { findUser, createUser } = require("./utils/database")
+const { getUsersByUsernameAndRoom, createUser, findUserById } = require("./utils/database")
 
 module.exports = () => {
     const io = require("socket.io")(strapi.server, {
@@ -25,7 +25,7 @@ module.exports = () => {
     io.on("connection", (socket) => {
         socket.on("join", async ({ username, room }, callback) => {
             try {
-                const users = await findUser(username, room)
+                const users = await getUsersByUsernameAndRoom(username, room)
 
                 if (users.length) {
                     throw new Error(`User ${username} already exists in room ${room}. Please select a different room.`)
@@ -61,6 +61,25 @@ module.exports = () => {
             })
 
             callback()
+        })
+
+        socket.on("sendMessage", async ({ userId, message }, callback) => {
+            try {
+                const user = await findUserById(userId)
+
+                if (!user) {
+                    throw new Error(`User doesn't exists in the database, please rejoin the chat.`)
+                }
+
+                io.to(user.room).emit("message", {
+                    user: user.username,
+                    text: message,
+                })
+
+                callback()
+            } catch (e) {
+                callback(`SendMessage handler failed: ${e.message}`)
+            }
         })
     })
 }

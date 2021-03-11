@@ -4,7 +4,7 @@ import styled         from "styled-components"
 import Message        from "./Message"
 
 const Messages = ({ messages, username }) => (
-    <StyledMessages>
+    <MessagesWrapper>
         <ScrollToBottom>
             {messages.map((message, index) => (
                 <div key={index}>
@@ -12,9 +12,13 @@ const Messages = ({ messages, username }) => (
                 </div>
             ))}
         </ScrollToBottom>
-    </StyledMessages>
+    </MessagesWrapper>
 )
 
-const StyledMessages = styled.div``
+const MessagesWrapper = styled.div`
+  padding: 5% 0;
+  overflow: auto;
+  flex: auto;
+`
 
 export default Messages

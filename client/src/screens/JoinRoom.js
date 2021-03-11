@@ -24,7 +24,6 @@ const JoinRoom = ({ onJoinSuccess }) => {
                 if (error) {
                     setError(error)
                     console.error(error)
-                    return
                 }
 
                 socket.on("welcome", (data) => {
@@ -34,57 +33,52 @@ const JoinRoom = ({ onJoinSuccess }) => {
         }
     }
 
+    socket.on("welcome", (data) => {
+        onJoinSuccess(data)
+    })
+
     return (
-        <Centered>
-            <StyleCard>
-                <label htmlFor="username">
-                    Enter your username
+        <JoinCard>
+            <label htmlFor="username">
+                Enter your username
 
-                    <Input name="username"
-                           placeholder="Enter your username"
-                           maxLength={15}
-                           value={username}
-                           onChange={(event) => handleOnChange(event, setUsername)}
-                    />
-                </label>
+                <Input name="username"
+                       placeholder="Enter your username"
+                       maxLength={15}
+                       value={username}
+                       onChange={(event) => handleOnChange(event, setUsername)}
+                />
+            </label>
 
-                <label htmlFor="room">
-                    Enter room id of your choice
+            <label htmlFor="room">
+                Enter room id of your choice
 
-                    <Input name="room"
-                           placeholder="Enter your room id"
-                           maxLength={15}
-                           value={room}
-                           onChange={(event) => handleOnChange(event, setRoom)}
-                    />
-                </label>
+                <Input name="room"
+                       placeholder="Enter your room id"
+                       maxLength={15}
+                       value={room}
+                       onChange={(event) => handleOnChange(event, setRoom)}
+                />
+            </label>
 
-                <StyledButton
-                    type="primary"
-                    size="large"
-                    onClick={handleOnClick}>
-                    Join the chat room
-                </StyledButton>
-            </StyleCard>
-        </Centered>
+            <JoinButton
+                type="primary"
+                size="large"
+                onClick={handleOnClick}>
+                Join the chat room
+            </JoinButton>
+        </JoinCard>
     )
 }
 
-const Centered = styled("div")`
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-`
-
-const StyleCard = styled(Card)`
+const JoinCard = styled(Card)`
   width: 581px;
   height: 210px;
   box-shadow: 2px 3px 3px 2.8px #d7d7e4;
   text-align: center;
 `
 
-const StyledButton = styled(Button)`
+const JoinButton = styled(Button)`
   margin-top: 10px;
 `
 
