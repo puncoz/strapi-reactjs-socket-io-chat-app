@@ -34,10 +34,12 @@ function App() {
 
                     <Route
                         path="/chat/rooms/:roomNumber"
-                        component={() => <ChatRoom
-                            username={username}
-                            room={room}
-                            joinData={joinData}/>}/>
+                        component={() => (
+                            <ChatRoom
+                                username={username}
+                                room={room}
+                                joinData={joinData}/>
+                        )}/>
                 </Switch>
             </CenteredWrapper>
         </div>

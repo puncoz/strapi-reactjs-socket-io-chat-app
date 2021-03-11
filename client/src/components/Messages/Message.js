@@ -6,12 +6,15 @@ import styled from "styled-components"
 
 const Message = ({ username, message: { user, text } }) => {
     const [messageByCurrentUser, setMessageByCurrentUser] = useState(false)
+    const [isBotMessage, setIsBotMessage] = useState(false)
 
     useEffect(() => {
         const trimmedName = username.trim().toLowerCase()
 
         if (user === trimmedName) {
             setMessageByCurrentUser(true)
+        } else if (user === "bot") {
+            setIsBotMessage(true)
         }
     }, [user, username])
 
@@ -21,13 +24,13 @@ const Message = ({ username, message: { user, text } }) => {
 
     return (
         <MessageContainer textPosition={textPosition}>
-            <MessageBox background={background}>
-                <MessageText color={textColor}>
+            <MessageBox isBot={isBotMessage} background={background}>
+                <MessageText isBot={isBotMessage} color={textColor}>
                     {text}
                 </MessageText>
             </MessageBox>
 
-            <SentBy>{user}</SentBy>
+            {!isBotMessage && <SentBy>{user}</SentBy>}
         </MessageContainer>
     )
 }
@@ -41,16 +44,16 @@ const MessageContainer = styled.div`
 
 const MessageBox = styled.div`
   border-radius: 20px;
-  padding: 15px 20px;
+  padding: ${props => props.isBot ? '0 20px' : '15px 20px'};
   display: inline-block;
   max-width: 80%;
-  background: ${props => props.background === "blue" ? "#2979ff" : "#f3f3f3"};
+  background: ${props => props.isBot ? 'transparent' : (props.background === "blue" ? "#2979ff" : "#f3f3f3")};
 `
 
 const MessageText = styled.p`
   font-size: 1.1em;
   word-wrap: break-word;
-  color: ${props => props.color === "white" ? "#fff" : "#353535"};
+  color: ${props => props.isBot ? '#7b7b7b' : (props.color === "white" ? "#fff" : "#353535")};
   margin: 0;
 `
 

@@ -16,6 +16,7 @@ import { socket }   from "../config/web-sockets"
 const ChatRoom = ({ username, room, joinData }) => {
     const [messages, setMessages] = useState([])
     const [message, setMessage] = useState("")
+    const [users, setUsers] = useState([])
 
     useEffect(() => {
         if (Object.keys(joinData).length) {
@@ -23,6 +24,10 @@ const ChatRoom = ({ username, room, joinData }) => {
 
             socket.on("message", (message, error) => {
                 setMessages(prevMessages => [...prevMessages, message])
+            })
+
+            socket.on("roomInfo", ({ users }) => {
+                setUsers(users)
             })
         } else {
             history.push("/join")
@@ -56,7 +61,7 @@ const ChatRoom = ({ username, room, joinData }) => {
             <Header room={room}/>
 
             <ChatWrapper>
-                <List/>
+                <List users={users}/>
 
                 <ChatBox>
                     <Messages

@@ -15,8 +15,8 @@ const List = ({ users }) => (
             renderItem={user => (
                 <AntdList.Item>
                     <AntdList.Item.Meta
-                        avatar={<Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png"/>}
-                        title={<a href="">{user.username}</a>}/>
+                        avatar={<Avatar src={`https://ui-avatars.com/api/?name=${user.username}`}/>}
+                        title={<a href="/">{user.username}</a>}/>
                 </AntdList.Item>
             )}/>
     </ListWrapper>
@@ -26,13 +26,22 @@ const ListWrapper = styled(AntdList)`
   margin-right: 10px;
   flex: 0 0 35%;
   padding: 20px;
+  overflow: auto;
+
+  .ant-list-split .ant-list-item {
+    padding: 7px 0;
+  }
+
+  .ant-list-item-meta {
+    align-items: center;
+  }
 
   .ant-list-item-meta-content {
     flex-grow: 0;
   }
 
   h4 {
-    font-size: 25px;
+    font-size: 16px;
   }
 
   a {

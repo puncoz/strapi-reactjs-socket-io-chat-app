@@ -10,7 +10,7 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/concepts/configurations.html#bootstrap
  */
 
-const { getUsersByUsernameAndRoom, createUser, findUserById } = require("./utils/database")
+const { getUsersByUsernameAndRoom, createUser, findUserById, getUsersInRoom } = require("./utils/database")
 
 module.exports = () => {
     const io = require("socket.io")(strapi.server, {
@@ -49,6 +49,14 @@ module.exports = () => {
                 return
             }
 
+            let usersInRoom = null
+            try {
+                usersInRoom = await getUsersInRoom(room)
+            } catch (e) {
+                callback(`Error while fetching users in room: ${e.message}`)
+                return
+            }
+
             socket.join(user.room)
             socket.emit("welcome", {
                 user: "bot",
@@ -58,6 +66,10 @@ module.exports = () => {
             socket.broadcast.to(user.room).emit("message", {
                 user: "bot",
                 text: `${user.username} has joined!`,
+            })
+            io.to(user.room).emit("roomInfo", {
+                room,
+                users: usersInRoom,
             })
 
             callback()
