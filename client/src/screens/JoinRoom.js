@@ -23,7 +23,7 @@ const JoinRoom = ({ onJoinSuccess }) => {
             socket.emit("join", { username, room }, (error) => {
                 if (error) {
                     setError(error)
-                    alert(error)
+                    console.error(error)
                     return
                 }
 

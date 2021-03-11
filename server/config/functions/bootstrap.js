@@ -10,6 +10,8 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/concepts/configurations.html#bootstrap
  */
 
+const { findUser, createUser } = require("./utils/database")
+
 module.exports = () => {
     const io = require("socket.io")(strapi.server, {
         cors: {
@@ -21,10 +23,44 @@ module.exports = () => {
     })
 
     io.on("connection", (socket) => {
-        socket.on("join", ({ username, room }) => {
-            console.log("user connected")
-            console.log(`username is ${username}`)
-            console.log(`room is ${room}`)
+        socket.on("join", async ({ username, room }, callback) => {
+            try {
+                const users = await findUser(username, room)
+
+                if (users.length) {
+                    throw new Error(`User ${username} already exists in room ${room}. Please select a different room.`)
+                }
+            } catch (e) {
+                callback(`Error on findUser: ${e.message}`)
+                return
+            }
+
+            let user = null
+            try {
+                user = await createUser({
+                    username, room, status: "ONLINE", socketId: socket.id,
+                })
+
+                if (!user) {
+                    throw new Error("User couldn't be created, please try again later.")
+                }
+            } catch (e) {
+                callback(`Error on createUser: ${e.message}`)
+                return
+            }
+
+            socket.join(user.room)
+            socket.emit("welcome", {
+                user: "bot",
+                text: `${user.username}, Welcome to room ${user.room}`,
+                userData: user,
+            })
+            socket.broadcast.to(user.room).emit("message", {
+                user: "bot",
+                text: `${user.username} has joined!`,
+            })
+
+            callback()
         })
     })
 }

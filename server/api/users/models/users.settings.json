@@ -2,7 +2,8 @@
   "kind": "collectionType",
   "collectionName": "users",
   "info": {
-    "name": "users"
+    "name": "users",
+    "description": ""
   },
   "options": {
     "increments": true,
@@ -13,14 +14,14 @@
     "username": {
       "type": "string"
     },
-    "statas": {
+    "status": {
       "type": "string"
     },
     "room": {
       "type": "string"
     },
     "socketId": {
-      "type": "integer"
+      "type": "biginteger"
     }
   }
 }

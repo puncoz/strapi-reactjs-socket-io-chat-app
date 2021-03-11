@@ -5,7 +5,7 @@ import {
     Switch,
 }                   from "react-router-dom"
 import { history }  from "./config/network"
-import ChatRoom     from "./screens/ChatRoom"
+import { ChatRoom } from "./screens/ChatRoom"
 import JoinRoom     from "./screens/JoinRoom"
 
 function App() {
