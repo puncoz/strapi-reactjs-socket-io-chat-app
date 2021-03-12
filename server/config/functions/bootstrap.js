@@ -10,7 +10,13 @@
  * See more details here: https://strapi.io/documentation/developer-docs/latest/concepts/configurations.html#bootstrap
  */
 
-const { getUsersByUsernameAndRoom, createUser, findUserById, getUsersInRoom } = require("./utils/database")
+const {
+    getUsersByUsernameAndRoom,
+    createUser,
+    findUserById,
+    getUsersInRoom,
+    deleteUserBySocketId,
+} = require("./utils/database")
 
 module.exports = () => {
     const io = require("socket.io")(strapi.server, {
@@ -91,6 +97,27 @@ module.exports = () => {
                 callback()
             } catch (e) {
                 callback(`SendMessage handler failed: ${e.message}`)
+            }
+        })
+
+        socket.on("disconnect", async () => {
+            try {
+                const users = await deleteUserBySocketId(socket.id)
+
+                if (users.length) {
+                    const { room, username } = users[0]
+                    io.to(room).emit("message", {
+                        user: "bot",
+                        text: `${username} has left the chat.`,
+                    })
+
+                    io.to(room).emit("roomInfo", {
+                        room: room,
+                        users: await getUsersInRoom(room),
+                    })
+                }
+            } catch (e) {
+                console.log(`Deleting user failed: ${e.message}`)
             }
         })
     })

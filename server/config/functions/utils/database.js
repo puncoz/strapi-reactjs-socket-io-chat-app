@@ -11,8 +11,10 @@ const createUser = async ({ username, room, status, socketId }) => await strapi.
     socketId,
 })
 
+const deleteUserBySocketId = async (socketId) => await strapi.services.users.delete({ socketId })
+
 const getUsersInRoom = async (room) => await strapi.services.users.find({ room })
 
 module.exports = {
-    getUsersByUsernameAndRoom, createUser, findUserById, getUsersInRoom,
+    getUsersByUsernameAndRoom, createUser, findUserById, getUsersInRoom, deleteUserBySocketId,
 }
